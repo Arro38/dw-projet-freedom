@@ -19,3 +19,10 @@ function loginAction()
     }
     LoginPage();
 }
+
+function logoutAction()
+{
+    global $base_url;
+    session_destroy();
+    header("Location: $base_url");
+}
