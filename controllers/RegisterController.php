@@ -9,7 +9,7 @@ function registerAction()
         $prenom = $_POST["prenom"];
         $verif = register($pseudo, $mdp, $nom, $prenom);
         if ($verif) {
-            header("Location: $base_url");
+            header("Location: $base_url/?p=login");
         } else {
             echo "Erreur lors de l'inscription";
         }

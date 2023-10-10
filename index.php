@@ -7,6 +7,9 @@ if (isset($_GET["p"])) {
         case "register":
             registerAction();
             break;
+        case "login":
+            loginAction();
+            break;
         default:
             echo "Erreur 404";
             break;

@@ -1,6 +1,10 @@
 <?php
+session_start();
 global $base_url;
 $base_url = "http://localhost/dw-projet-freedom/";
+
+global $isConnected;
+$isConnected = isset($_SESSION["user"]);
 
 // Importer tous les controllers , models , templates
 
