@@ -6,17 +6,38 @@ function HomePage($allStatus)
     $titre = "Accueil";
     ob_start();
 ?>
-    <?php if ($isConnected) { ?>
+    <?php
+    // Si l'utilisateur est connecté, on affiche le formulaire de statut
+    if ($isConnected) { ?>
         <form method="post" action="?p=status&a=create">
             <textarea name="content" placeholder="Nouveau statut ..." cols="30" rows="10"></textarea>
             <input type="submit" value="Publier">
         </form>
     <?php } ?>
-    <?php foreach ($allStatus as $s) { ?>
+
+    <?php
+    // On récupère tous les statuts
+    foreach ($allStatus as $s) { ?>
         <p><?= $s["content"] ?> -
         <h3><?= getUserPseudo($s["id_user"]) ?></h3>
         </p>
-    <?php } ?>
+        <?php
+        // Si l'utilisateur est connecté, on affiche le formulaire de commentaire
+        if ($isConnected) { ?>
+            <form method="post" action="?p=comment&a=create&id_status=<?= $s["id"] ?>">
+                <textarea name="content" placeholder="Commenter ..." cols="30" rows="1"></textarea>
+                <input type="submit" value="Commenter">
+            </form>
+
+        <?php }
+        // On récupère tous les commentaires du statut
+        $comments = getAllCommentsByStatus($s["id"]);
+        foreach ($comments as $c) { ?>
+            <p><?= $c["content"] ?> -
+                <?= getUserPseudo($c["id_user"]) ?>
+            </p>
+    <?php }
+    } ?>
 
 
 <?php
