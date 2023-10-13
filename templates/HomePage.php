@@ -18,12 +18,22 @@ function HomePage($allStatus)
     <?php
     // On récupère tous les statuts
     foreach ($allStatus as $s) { ?>
-        <p><?= $s["content"] ?> -
-        <h3><?= getUserPseudo($s["id_user"]) ?></h3>
+        <p><?= $s["content"] ?> - <?= getUserPseudo($s["id_user"]) ?>
+
         </p>
         <?php
         // Si l'utilisateur est connecté, on affiche le formulaire de commentaire
-        if ($isConnected) { ?>
+        if ($isConnected) {
+            // On vérifie si l'utilisateur a déjà liké le statut
+            if (isLiked($s["id"], $_SESSION["user"]["id"])) {
+                $action = "delete";
+                $value = "Je n'aime plus";
+            } else {
+                $action = "create";
+                $value = "J'aime";
+            }
+        ?>
+            <a href="?p=like&a=<?= $action ?>&id_status=<?= $s["id"] ?> "> <?= $value ?></a>
             <form method="post" action="?p=comment&a=create&id_status=<?= $s["id"] ?>">
                 <textarea name="content" placeholder="Commenter ..." cols="30" rows="1"></textarea>
                 <input type="submit" value="Commenter">
