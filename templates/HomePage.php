@@ -1,6 +1,6 @@
 <?php
 
-function HomePage($allStatus)
+function HomePage($allStatus, $allUser)
 {
     global $isConnected;
     $titre = "Accueil";
@@ -50,7 +50,15 @@ function HomePage($allStatus)
     } ?>
 
 
-<?php
+    <?php
     $contenu = ob_get_clean();
+    ob_start();
+    foreach ($allUser as $u) {
+    ?>
+        <p><?= $u["nom"] . " " . $u["prenom"] ?><a href="?p=request&a=create&id_user_invited=<?= $u["id"] ?>"> Demander en ami </a></p>
+
+<?php
+    }
+    $contenu_friend = ob_get_clean();
     require "layout.php";
 }

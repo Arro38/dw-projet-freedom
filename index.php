@@ -4,6 +4,9 @@ require_once "autoload.php";
 if (isset($_GET["p"])) {
     $page = $_GET["p"];
     switch ($page) {
+        case "request":
+            requestAction();
+            break;
         case "like":
             likeAction();
             break;

@@ -9,7 +9,16 @@
 
 <body>
     <h1><?= $titre ?></h1>
-    <?= $contenu ?>
+    <div style="display:flex; justify-content:space-around;">
+        <div>
+            <h2>Contenu</h2>
+            <?= $contenu ?>
+        </div>
+        <div>
+            <h2>Ajouter en amis</h2>
+            <?php if (isset($contenu_friend)) echo $contenu_friend ?>
+        </div>
+    </div>
 </body>
 
 </html>
