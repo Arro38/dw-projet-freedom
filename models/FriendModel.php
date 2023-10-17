@@ -1,10 +1,13 @@
 <?php
+//Récupérer les personnes que je peux ajouter en amis (cad qui ne sont pas mes amis et qui ne m'ont pas demandé en amis)
 function getAllOtherUsers($monId)
 {
     global $pdo;
     try {
 
         $query = $pdo->prepare("SELECT u.* FROM `user` as u where u.id!= :id 
+        AND u.id not in (SELECT f.id_user from request as f where f.id_user_invited = :id) 
+        AND u.id not in (SELECT f.id_user_invited from request as f where f.id_user = :id) 
         AND u.id not in (SELECT f.id_user_friend from friend as f where f.id_user = :id) 
         AND u.id not in (SELECT f.id_user from friend as f where f.id_user_friend = :id);");
         $query->execute([
@@ -18,6 +21,24 @@ function getAllOtherUsers($monId)
     }
 }
 
+//Récupérer les personnes que j'ai demandé en amis
+function getUserRequest($monId)
+{
+    global $pdo;
+    try {
+
+        $query = $pdo->prepare("SELECT u.* FROM `user` as u where u.id!= :id
+        AND u.id in (SELECT f.id_user_invited from request as f where f.id_user = :id) ;");
+        $query->execute([
+            "id" => $monId
+        ]);
+        $result = $query->fetchAll();
+        return $result;
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+        return false;
+    }
+}
 function createRequest($id_user, $id_user_invited)
 {
     global $pdo;
@@ -65,4 +86,21 @@ function updateRequest($id_user, $id_user_friend, $confirmed)
         }
     }
     return true;
+}
+
+
+function cancelRequest($id_user, $id_user_friend)
+{
+    global $pdo;
+
+    try {
+        $query = $pdo->prepare("DELETE FROM request WHERE id_user = :id_user AND id_user_invited = :id_user_friend");
+        $query->execute([
+            "id_user" => $id_user,
+            "id_user_friend" => $id_user_friend
+        ]);
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+        return false;
+    }
 }

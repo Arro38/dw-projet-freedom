@@ -1,6 +1,6 @@
 <?php
 
-function HomePage($allStatus, $allUser)
+function HomePage($allStatus, $allUser, $allRequestedUser)
 {
     global $isConnected;
     $titre = "Accueil";
@@ -53,12 +53,21 @@ function HomePage($allStatus, $allUser)
     <?php
     $contenu = ob_get_clean();
     ob_start();
+    // Les personnes que je peux demander en amis
     foreach ($allUser as $u) {
     ?>
         <p><?= $u["nom"] . " " . $u["prenom"] ?><a href="?p=request&a=create&id_user_invited=<?= $u["id"] ?>"> Demander en ami </a></p>
 
-<?php
+    <?php
+        //Les personnes que j'ai demandé en amis
+
     }
+    foreach ($allRequestedUser as $u) {
+    ?>
+        <p><?= $u["nom"] . " " . $u["prenom"] ?><a href="?p=request&a=cancel&id_user_invited=<?= $u["id"] ?>"> Annuler la demande </a></p>
+<?php }
+    // Les personnes qui m'ont demandé en amis
+    // Mes amis
     $contenu_friend = ob_get_clean();
     require "layout.php";
 }
