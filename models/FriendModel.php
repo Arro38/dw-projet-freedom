@@ -39,6 +39,47 @@ function getUserRequest($monId)
         return false;
     }
 }
+
+//Récupérer les personnes qui m'ont demandé en amis
+function getAllRequestFromOtherUser($monId)
+{
+    global $pdo;
+    try {
+
+        $query = $pdo->prepare("SELECT u.* FROM `user` as u where u.id!= :id
+        AND u.id in (SELECT f.id_user from request as f where f.id_user_invited = :id) ;");
+        $query->execute([
+            "id" => $monId
+        ]);
+        $result = $query->fetchAll();
+        return $result;
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+        return false;
+    }
+}
+
+//Récupérer mes amis
+function getAllFriend($monId)
+{
+    global $pdo;
+    try {
+
+        $query = $pdo->prepare("SELECT u.* FROM `user` as u where u.id!= :id
+        AND (u.id in (SELECT f.id_user from friend as f where f.id_user_friend = :id) 
+        OR u.id in (SELECT f.id_user_friend from friend as f where f.id_user = :id)) ;");
+        $query->execute([
+            "id" => $monId
+        ]);
+        $result = $query->fetchAll();
+        return $result;
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+        return false;
+    }
+}
+
+
 function createRequest($id_user, $id_user_invited)
 {
     global $pdo;
@@ -59,14 +100,15 @@ function createRequest($id_user, $id_user_invited)
 function updateRequest($id_user, $id_user_friend, $confirmed)
 {
     global $pdo;
-
     try {
-        $query = $pdo->prepare("UPDATE request SET confirmed = :confirmed WHERE id_user = :id_user AND id_user_invited = :id_user_friend");
+        $query = $pdo->prepare("UPDATE request SET confirmed = :confirmed WHERE id_user = :id_user AND id_user_invited = :id_user_friend 
+        OR id_user_invited = :id_user AND id_user = :id_user_friend");
         $query->execute([
             "id_user" => $id_user,
             "id_user_friend" => $id_user_friend,
-            "createdAt" => date("Y-m-d H:i:s")
+            "confirmed" => $confirmed
         ]);
+        print_r($query);
     } catch (PDOException $e) {
         echo $e->getMessage();
         return false;

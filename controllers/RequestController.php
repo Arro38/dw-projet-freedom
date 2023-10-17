@@ -10,13 +10,13 @@ function requestAction()
             createRequest($id_user, $id_user_invited);
         } elseif ($action == "cancel") {
             cancelRequest($id_user, $id_user_invited);
-        } elseif ($action == "accepte") {
-            updateRequest($id_user, $id_user_invited, true);
+        } elseif ($action == "accept") {
+            updateRequest($id_user, $id_user_invited, 1);
         } elseif ($action == "refuse") {
-            updateRequest($id_user, $id_user_invited, false);
+            updateRequest($id_user, $id_user_invited, 0);
         } else {
             echo "Erreur 404 - Action inconnue";
         }
     }
-    header("Location: $base_url");
+    // header("Location: $base_url");
 }
